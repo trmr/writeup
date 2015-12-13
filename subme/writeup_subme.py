@@ -13,6 +13,7 @@ EQUAL = "."
 DIFFER = "D"
 
 HOST = '127.0.0.1'
+#HOST = 'katagaitai.orz.hm'
 PORT = 9999
 
 def s2b(s):
@@ -170,7 +171,7 @@ def check_diff2(out_bit, diff):
     return True
 
 def check_key_byte(pos,k):
-    round = 4 #チェック回数
+    round = 5 #チェック回数
     flag = 0
     for i in xrange(round):
         out_bits_list = get_diff_c12()
@@ -184,8 +185,6 @@ def check_key_byte(pos,k):
 
         li_ma[pos] = li_ma[pos]^k
         li_mb[pos] = li_mb[pos]^k
-        ma = "".join(map(chr,li_ma))
-        mb = "".join(map(chr,li_mb))
         ca = list_ci[li_ma[pos]]
         cb = list_ci[li_mb[pos]]
         bin_ca = s2b(ca[::-1])
@@ -206,7 +205,7 @@ def check_key_byte(pos,k):
     return False
 
 def check_key_byte2(pos,k1,k2):
-    round = 4 #チェック回数
+    round = 5 #チェック回数
     flag = 0
     out_bits_list = get_diff_c22()
     c22a=os.urandom(8)
@@ -221,8 +220,6 @@ def check_key_byte2(pos,k1,k2):
         li_c21b[pos] = li_c21b[pos]^k2
         list_ci = get_list_ci_by_c21(li_c21a,pos,k1)
 
-        c21a = "".join(map(chr,li_c21a))
-        c21b = "".join(map(chr,li_c21b))
         ca = list_ci[li_c21a[pos]]
         cb = list_ci[li_c21b[pos]]
         bin_ca = s2b(ca[::-1])
@@ -254,8 +251,6 @@ def recover_k1():
         for k in xrange(256):
             li_ma[pos] = li_ma[pos]^k
             li_mb[pos] = li_mb[pos]^k
-            ma = "".join(map(chr,li_ma))
-            mb = "".join(map(chr,li_mb))
             ca = list_ci[li_ma[pos]]
             cb = list_ci[li_mb[pos]]
             bin_ca = s2b(ca[::-1])
@@ -268,6 +263,7 @@ def recover_k1():
                 if check_key_byte(pos,k) == True:
                     print "k[%d]=%d" % (pos,k)
                     k1.append(k)
+                    break
 
             li_ma[pos] = li_ma[pos]^k
             li_mb[pos] = li_mb[pos]^k
@@ -290,8 +286,6 @@ def recover_k2(k1):
         for k in xrange(256):
             li_c21a[pos] = li_c21a[pos]^k
             li_c21b[pos] = li_c21b[pos]^k
-            c21a = "".join(map(chr,li_c21a))
-            c21b = "".join(map(chr,li_c21b))
             ca = list_ci[li_c21a[pos]]
             cb = list_ci[li_c21b[pos]]
             bin_ca = s2b(ca[::-1])
@@ -304,6 +298,7 @@ def recover_k2(k1):
                 if check_key_byte2(pos,k1,k) == True:
                     print "k[%d]=%d" % (pos+8,k)
                     k2.append(k)
+                    break
 
             li_c21a[pos] = li_c21a[pos]^k
             li_c21b[pos] = li_c21b[pos]^k
@@ -328,7 +323,6 @@ def recover_k3(k1,k2):
     toEnc=map(ord,subme.permute("".join(map(chr,toEnc))))
 
     ints=0
-    kadd=0
     toEnc.reverse()
     for el in xrange(len(toEnc)):
         ints+=((toEnc[el])<<(8*el))
@@ -348,4 +342,4 @@ k1 = recover_k1()
 k2 = recover_k2(k1)
 k3 = recover_k3(k1,k2)
 key = k1+k2+k3
-print "".join(map(chr,key))
+print `"".join(map(chr,key))`
