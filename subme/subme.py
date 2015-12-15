@@ -8,11 +8,8 @@ import hashlib,struct
 from itertools import *
 import os,SocketServer
 import base64 as b64
-key=""
-h=hashlib.sha512()
-h.update(key)
-ha=h.digest()
-k1,k2,k3=array.array("B",ha[0:8]),array.array("B",ha[8:16]),array.array("B",ha[16:24])[::-1]
+key="SORRY!_THIS_KEY_IS_FAKE!"
+k1,k2,k3=array.array("B",key[0:8]),array.array("B",key[8:16]),array.array("B",key[16:24])[::-1]
 
 def subStr(toSub):
    sub= lambda x: s[x]
